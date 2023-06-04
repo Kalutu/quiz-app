@@ -1,6 +1,9 @@
 # Quiz App
 This is a simple quiz application that presents multiple-choice questions and allows users to select their answers. The correct answers are shuffled randomly for each question, making it challenging and unpredictable for the users.
 
+## Preview
+![Sample Question](images/questions.png)
+
 ## Usage
 1. Clone the repository or download the source code files.
 2. Open the `index.html` file in your web browser.
