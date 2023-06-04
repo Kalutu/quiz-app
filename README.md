@@ -23,4 +23,14 @@ You can customize the quiz app by modifying the `questions` array in the `script
         { text: "Answer 4", answer: false }
     ]
 }
+```
+- Modify the question property to change the question text.
+- Adjust the choices array to include the answer choices for the question.
+- Set the answer property to true for the correct answer and false for the incorrect answers.
+- Feel free to add, remove, or modify the questions to suit your needs.
+
+## Acknowledgements
+- The shuffle function used to shuffle the answer choices is based on the Fisher-Yates shuffle algorithm.
+This project was created by Kalutu Daniel.
+Please feel free to customize and enhance the quiz app as needed. If you have any questions or suggestions, please don't hesitate to reach out. Enjoy the quiz!
 
