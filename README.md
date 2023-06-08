@@ -37,3 +37,5 @@ You can customize the quiz app by modifying the `questions` array in the `script
 This project was created by Kalutu Daniel.
 Please feel free to customize and enhance the quiz app as needed. If you have any questions or suggestions, please don't hesitate to reach out. Enjoy the quiz!
 
+## Credits
+This project was created by Kalutu Daniel.
