@@ -1,124 +1,102 @@
-import questions from "./questions"
+import React, { useState, useEffect } from "react";
+import questions from "./questions";
+import "./styles.css";
 
 function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
+  const shuffledArray = [...array];
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+  }
+  return shuffledArray;
 }
 
-// Shuffle answer choices and correct answers for each question
-questions.forEach((question) => {
-    shuffle(question.choices);
+export default function App() {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  const [questionText, setQuestionText] = useState("");
+  const [choices, setChoices] = useState([]);
+  const [correctAnswer, setCorrectAnswer] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [showNextButton, setShowNextButton] = useState(false);
 
-    // Find the index of the correct answer
-    const correctAnswerIndex = question.choices.findIndex((choice) => choice.answer === true);
+  const startQuiz = () => {
+    setCurrentQuestionIndex(0);
+    setScore(0);
+    setShowNextButton(false);
+    showQuestion();
+  };
 
-    // Swap the correct answer with a randomly chosen answer
-    const randomIndex = Math.floor(Math.random() * question.choices.length);
-    [question.choices[correctAnswerIndex], question.choices[randomIndex]] = [question.choices[randomIndex], question.choices[correctAnswerIndex]];
-});
-
-
-const questionElement = document.getElementById("question");
-const answerButtons = document.getElementById("answer-buttons");
-const nextButton = document.getElementById("next-button");
-
-let currentQuestionIndex = 0;
-let score = 0;
-
-function startQuiz(){
-    currentQuestionIndex = 0;
-    score = 0;
-    nextButton.innerHtmL="Next";
-    showQuestion()
-}
-
-function showQuestion(){
+  const showQuestion = () => {
     resetState();
     let currentQuestion = questions[currentQuestionIndex];
-    let questionNumber= currentQuestionIndex+1;
-    questionElement.innerHTML= questionNumber + "." + currentQuestion.question;
+    let questionNumber = currentQuestionIndex + 1;
+    setQuestionText(`${questionNumber}. ${currentQuestion.question}`);
+    const shuffledChoices = shuffle(currentQuestion.choices);
+    setChoices(shuffledChoices);
+    setCorrectAnswer(currentQuestion.choices.findIndex((choice) => choice.answer === true));
+  };
 
-    currentQuestion.choices.forEach(choice=>{
-         const button = document.createElement("button");
-         button.innerHTML = choice.text;
-         button.classList.add("btn");
-         answerButtons.appendChild(button);
-         if(choice.answer){
-            button.dataset.answer = choice.answer;
-         }
-         button.addEventListener("click", selectChoice)
-    })
-}
+  const resetState = () => {
+    setChoices([]);
+    setCorrectAnswer(null);
+    setSelectedAnswer(null);
+  };
 
-function resetState(){
-    nextButton.style.display = "none";
-    while(answerButtons.firstChild){
-        answerButtons.removeChild(answerButtons.firstChild);
+  const selectChoice = (isCorrect, index) => {
+    if (isCorrect) {
+      setScore(score + 1);
     }
-}
 
-function selectChoice(e){
-    const selectedBtn = e.target;
-    const isCorrect = selectedBtn.dataset.answer === "true";
-    if(isCorrect){
-        selectedBtn.classList.add("correct");
-        score++;
-    }
-    else{
-        selectedBtn.classList.add("incorrect");
-    }
-    Array.from(answerButtons.children).forEach(button=>{
-        if(button.dataset.answer === "true"){
-            button.classList.add("correct");
-        }
-        button.disabled = true;
-    });
-    nextButton.style.display = "block"
-}
+    setSelectedAnswer(index);
+    setShowNextButton(true);
+  };
 
-function showScore(){
+  const handleNextButton = () => {
+    setShowNextButton(false);
+    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+
+    if (currentQuestionIndex < questions.length - 1) {
+      showQuestion();
+    } else {
+      // If it's the last question, show the score
+      showScore();
+    }
+  };
+
+  const showScore = () => {
     resetState();
-    questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
-    nextButton.innerHTML = "Play Again";
-    nextButton.style.display = "block";
-}
+    setQuestionText(`You scored ${score} out of ${questions.length}!`);
+  };
 
-function handleNextButton(){
-    currentQuestionIndex++;
-    if(currentQuestionIndex<questions.length){
-        showQuestion()
-    }
-    else{
-        showScore();
-    }
-}
+  useEffect(() => {
+    startQuiz();
+  }, []);
 
-nextButton.addEventListener("click", ()=>{
-    if(currentQuestionIndex < questions.length){
-        handleNextButton()
-    }
-    else{
-        startQuiz();
-    }
-})
-startQuiz();
-
-export default function App(){
-    return(      
-        <div class="app">
-            <h1>Simple Quiz</h1>
-            <div class="quiz">
-                <h2 id="question">Question goes here</h2>
-                <div id="answer-buttons">
-                    <button class="btn">Answer 1</button>
-                    <button class="btn">Answer 2</button>
-                    <button class="btn">Answer 3</button>
-                    <button class="btn">Answer 4</button>
-                </div>
-                <button id="next-button">Next</button>
-            </div>
+  return (
+    <div className="app">
+      <h1>Simple Quiz</h1>
+      <div className="quiz">
+        <h2 id="question">{questionText}</h2>
+        <div id="answer-buttons">
+          {choices.map((choice, index) => (
+            <button
+              key={index}
+              className={`btn ${selectedAnswer === index ? (choice.answer ? "correct" : "incorrect") : ""}`}
+              onClick={() => selectChoice(choice.answer, index)}
+              aria-label={choice.text}
+              disabled={selectedAnswer !== null}
+            >
+              {choice.text}
+            </button>
+          ))}
         </div>
-    )
+        {showNextButton && (
+          <button id="next-button" onClick={handleNextButton}>
+            Next
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }
