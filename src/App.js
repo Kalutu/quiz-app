@@ -91,7 +91,7 @@ export default function App() {
             </button>
           ))}
         </div>
-        {showNextButton && (
+        { showNextButton && (
           <button id="next-button" onClick={handleNextButton}>
             Next
           </button>

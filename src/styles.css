@@ -63,13 +63,15 @@ body {
     background: #001e4d;
     color:#fff;
     font-weight: 500;
-    width: 150px;
+    width: 300px;
     border: 0;
-    padding: 10px;
+    padding: 15px;
     margin: 20px auto 0;
-    border-radius: 4px;
+    border-radius: 7px;
     cursor: pointer;
-    display: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .correct {
