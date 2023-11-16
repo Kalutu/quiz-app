@@ -24,18 +24,18 @@ export default function App() {
     setCurrentQuestionIndex(0);
     setScore(0);
     setShowNextButton(false);
-    showQuestion();
+    showQuestion(0);
   };
 
-  const showQuestion = () => {
+  const showQuestion = (index) => {
     resetState();
-    let currentQuestion = questions[currentQuestionIndex];
-    let questionNumber = currentQuestionIndex + 1;
+    let currentQuestion = questions[index];
+    let questionNumber = index + 1;
     setQuestionText(`${questionNumber}. ${currentQuestion.question}`);
     const shuffledChoices = shuffle(currentQuestion.choices);
     setChoices(shuffledChoices);
     setCorrectAnswer(currentQuestion.choices.findIndex((choice) => choice.answer === true));
-  };
+  };  
 
   const resetState = () => {
     setChoices([]);
@@ -57,7 +57,7 @@ export default function App() {
     setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
 
     if (currentQuestionIndex < questions.length - 1) {
-      showQuestion();
+      showQuestion(currentQuestionIndex + 1);
     } else {
       // If it's the last question, show the score
       showScore();
